@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body>
+
+	<p:panel id="edicao" visible="#{!cadastroCon.voltar}">
+		<h:form>
+			<p:growl></p:growl>
+			<p:panelGrid columns="2">
+				
+				<p:outputLabel value="Nome"/>
+				<p:inputText value="#{cadastroCon.nome}"
+					maxlength="60"></p:inputText>
+					
+				<p:outputLabel value="E-mail"/>
+				<p:inputText value="#{cadastroCon.email}"
+					maxlength="100"></p:inputText>
+					
+				<p:outputLabel value="Senha"/>
+				<p:password value="#{cadastroCon.senha}"
+					maxlength="100"/>
+					
+				<p:outputLabel value="Repita a Senha"/>
+				<p:password value="#{cadastroCon.senha2}"
+					maxlength="100"/>
+					
+				<p:outputLabel value="Cidade"></p:outputLabel>
+				<p:autoComplete dropdown="true" multiple="false"
+					forceSelection="true" var="obj" itemLabel="#{obj.nome} - #{obj.estado.uf}"
+					itemValue="#{obj}" value="#{cadastroCon.cidade}"
+					converter="cidadeConverter"
+					completeMethod="#{cadastroCon.completeCidade}" />
+
+			</p:panelGrid>
+
+			<p:commandButton value="Concluir" action="#{cadastroCon.salvar}"
+				update="edicao voltar" icon="ui-icon-check"></p:commandButton>
+			<p:commandButton value="Cancelar" action="#{cadastroCon.cancelar}"
+				update="edicao voltar" icon="ui-icon-close" immediate="true" ajax="false"></p:commandButton>
+
+		</h:form>
+	</p:panel>
+	<p:panel id="voltar" visible="#{cadastroCon.voltar}">
+		<h:form>
+			<p:outputLabel value="Tudo certo! "/>
+			<p:commandButton value="Voltar" action="#{cadastroCon.cancelar}"
+				update="edicao voltar" icon="ui-icon-close" immediate="true" ajax="false"/>
+		</h:form>
+	</p:panel>
+</h:body>
+</html>

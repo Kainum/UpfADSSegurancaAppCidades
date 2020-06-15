@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body onload="#estadoCon.carregarLista()">
+	<!-- Painel de consulta -->
+	<p:panel id="consulta" visible="#{!estadoCon.editando}">
+		<h:form>
+			<p:commandButton value="Incluir" action="#{estadoCon.incluir}"
+				update="consulta edicao" icon="ui-icon-plusthick"
+				rendered="#{loginControle.usuarioLogado.admin}"></p:commandButton>
+
+			<p:commandButton value="Alterar" action="#{estadoCon.alterar}"
+				update="consulta edicao" icon="ui-icon-pencil"
+				disabled="#{estadoCon.selecionado==null}"
+				rendered="#{loginControle.usuarioLogado.admin}"></p:commandButton>
+
+			<p:commandButton value="Excluir" action="#{estadoCon.excluir}"
+				update="consulta" icon="ui-icon-trash"
+				onclick="return confirm('Excluir?')"
+				disabled="#{estadoCon.selecionado==null}"
+				rendered="#{loginControle.usuarioLogado.admin}"></p:commandButton>
+
+			<p:dataTable var="o" value="#{estadoCon.lista}" emptyMessage="Nada para mostrar!"
+				selectionMode="single" selection="#{estadoCon.selecionado}" rowKey="#{o.id}"
+				rows="5" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+				{LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}">
+
+				<p:ajax event="rowSelect" update="consulta"></p:ajax>
+				<p:ajax event="rowUnselect" update="consulta"></p:ajax>
+
+
+				<p:column headerText="Código">
+					<p:outputLabel value="#{o.id}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="Nome">
+					<p:outputLabel value="#{o.nome}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="UF">
+					<p:outputLabel value="#{o.uf}"></p:outputLabel>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</p:panel>
+
+	<!--  edicao -->
+	<p:panel id="edicao" visible="#{estadoCon.editando}">
+		<h:form>
+			<p:growl></p:growl>
+			<p:panelGrid columns="2">
+				
+				<p:outputLabel value="Código"></p:outputLabel>
+				<p:inputText value="#{estadoCon.selecionado.id}"
+					placeholder="AUTO" disabled="true"></p:inputText>
+				
+				<p:outputLabel value="Nome"></p:outputLabel>
+				<p:inputText value="#{estadoCon.selecionado.nome}"
+					maxlength="60"></p:inputText>
+					
+				<p:outputLabel value="UF"></p:outputLabel>
+				<p:inputText value="#{estadoCon.selecionado.uf}"
+					maxlength="2"></p:inputText>
+
+			</p:panelGrid>
+
+			<p:commandButton value="Salvar" action="#{estadoCon.salvar}"
+				update="consulta edicao" icon="ui-icon-check"></p:commandButton>
+			<p:commandButton value="Cancelar" action="#{estadoCon.cancelar}"
+				update="consulta edicao" icon="ui-icon-close" immediate="true"></p:commandButton>
+
+		</h:form>
+	</p:panel>
+</h:body>
+</html>

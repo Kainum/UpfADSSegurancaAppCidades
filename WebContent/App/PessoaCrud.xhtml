@@ -1,0 +1,108 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body onload="#pessoaCon.carregarLista()">
+	<!-- Painel de consulta -->
+	<p:panel id="consulta" visible="#{!pessoaCon.editando}">
+		<h:form>
+			<p:commandButton value="Incluir" action="#{pessoaCon.incluir}"
+				update="consulta edicao" icon="ui-icon-plusthick"></p:commandButton>
+
+			<p:commandButton value="Alterar" action="#{pessoaCon.alterar}"
+				update="consulta edicao" icon="ui-icon-pencil"
+				disabled="#{pessoaCon.selecionado==null}"></p:commandButton>
+
+			<p:commandButton value="Excluir" action="#{pessoaCon.excluir}"
+				update="consulta" icon="ui-icon-trash"
+				onclick="return confirm('Excluir?')"
+				disabled="#{pessoaCon.selecionado==null}"></p:commandButton>
+
+			<p:dataTable var="o" value="#{pessoaCon.lista}" emptyMessage="Nada para mostrar!"
+				selectionMode="single" selection="#{pessoaCon.selecionado}" rowKey="#{o.id}"
+				rows="5" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+				{LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}">
+
+				<p:ajax event="rowSelect" update="consulta"></p:ajax>
+				<p:ajax event="rowUnselect" update="consulta"></p:ajax>
+
+
+				<p:column headerText="Código">
+					<p:outputLabel value="#{o.id}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="Nome">
+					<p:outputLabel value="#{o.nome}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="E-mail">
+					<p:outputLabel value="#{o.email}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="Senha">
+					<p:outputLabel value="#{o.senha}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="Cidade">
+					<p:outputLabel value="#{o.cidade}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="Admin">
+					<p:outputLabel value="#{o.admin}"></p:outputLabel>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</p:panel>
+
+	<!--  edicao -->
+	<p:panel id="edicao" visible="#{pessoaCon.editando}">
+		<h:form>
+			<p:growl></p:growl>
+			<p:panelGrid columns="2">
+				
+				<p:outputLabel value="Código"></p:outputLabel>
+				<p:inputText value="#{pessoaCon.selecionado.id}"
+					placeholder="AUTO" disabled="true"></p:inputText>
+				
+				<p:outputLabel value="Nome"></p:outputLabel>
+				<p:inputText value="#{pessoaCon.selecionado.nome}"
+					maxlength="60"></p:inputText>
+					
+				<p:outputLabel value="E-mail"></p:outputLabel>
+				<p:inputText value="#{pessoaCon.selecionado.email}"
+					maxlength="100"></p:inputText>
+					
+				<p:outputLabel value="Senha"></p:outputLabel>
+				<p:inputText value="#{pessoaCon.senha}"
+					maxlength="100"></p:inputText>
+					
+				<p:outputLabel value="Cidade"></p:outputLabel>
+				<p:autoComplete dropdown="true" multiple="false"
+					forceSelection="true" var="obj" itemLabel="#{obj.nome} - #{obj.estado.uf}"
+					itemValue="#{obj}" value="#{pessoaCon.selecionado.cidade}"
+					converter="cidadeConverter"
+					completeMethod="#{pessoaCon.completeCidade}" />
+					
+				<p:outputLabel value="Admin"></p:outputLabel>
+				<p:selectOneRadio
+					value="#{pessoaCon.selecionado.admin}"
+					unselectable="true">
+					<f:selectItem itemLabel="Sim" itemValue="true" />
+					<f:selectItem itemLabel="Não" itemValue="false" />
+				</p:selectOneRadio>
+
+			</p:panelGrid>
+
+			<p:commandButton value="Salvar" action="#{pessoaCon.salvar}"
+				update="consulta edicao" icon="ui-icon-check"></p:commandButton>
+			<p:commandButton value="Cancelar" action="#{pessoaCon.cancelar}"
+				update="consulta edicao" icon="ui-icon-close" immediate="true"></p:commandButton>
+
+		</h:form>
+	</p:panel>
+</h:body>
+</html>
